@@ -11,8 +11,6 @@ params = {
 }
 s = requests.request('GET', url, params=params)
 s_json = s.json()
-print(s_json)
-
 
 connection_pool = pool.SimpleConnectionPool(1,
                                             10,
@@ -20,7 +18,9 @@ connection_pool = pool.SimpleConnectionPool(1,
                                             password='rendino12',
                                             database='learning',
                                             host='localhost')
-'''
+
 with connection_pool.getconn() as connection:
     with connection.cursor() as cursor:
-'''
+        cursor.executemany('INSERT INTO stock_price (history,open,close,high,low,volume) VALUES (%(history)s,'
+                           '%(open)s, %(close)s, %(high)s, %(low)s, %(volume)s)', s_json)
+
