@@ -1,7 +1,7 @@
 import requests
 import json
 
-# from psycopg2 import pool
+from psycopg2 import pool
 
 url = 'https://api.worldtradingdata.com/api/v1/history'
 params = {
@@ -25,16 +25,14 @@ for date, history in s_json['history'].items():
     }
     insert_data.append(_history)
 
-insert_data
-#
-# connection_pool = pool.SimpleConnectionPool(1,
-#                                             10,
-#                                             user='postgres',
-#                                             password='rendino12',
-#                                             database='learning',
-#                                             host='localhost')
+connection_pool = pool.SimpleConnectionPool(1,
+                                            10,
+                                            user='postgres',
+                                            password='rendino12',
+                                            database='learning',
+                                            host='localhost')
 
-# with connection_pool.getconn() as connection:
-#     with connection.cursor() as cursor:
-#         cursor.executemany('INSERT INTO stock_price (history,open,close,high,low,volume) VALUES (%(history)s,'
-#                            '%(open)s, %(close)s, %(high)s, %(low)s, %(volume)s)', insert_data)
+with connection_pool.getconn() as connection:
+    with connection.cursor() as cursor:
+        cursor.executemany('INSERT INTO stock_price (name,history,open,close,high,low,volume) VALUES (%(name)s, %(history)s,'
+                           '%(open)s, %(close)s, %(high)s, %(low)s, %(volume)s)', insert_data)
